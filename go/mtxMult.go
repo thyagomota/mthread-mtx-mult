@@ -25,7 +25,7 @@ type matrix [][]int
 // globals
 var wg sync.WaitGroup
 const MAX_INT = 10
-const DISPLAY_MATRICES = false
+const DISPLAY_MATRICES = true
 
 /*
  * generates a random nxn matrix of integers
@@ -36,6 +36,20 @@ func randomMatrix(n int) matrix {
 		mtx[i] = make([]int, n)
 		for j := 0; j < n; j++ {
 			mtx[i][j] = rand.Intn(MAX_INT)
+		}
+	}
+	return mtx
+}
+
+/*
+ * generates a all-ones nxn matrix of integers
+ */
+func allOnesMatrix(n int) matrix {
+	mtx := make(matrix, n)
+	for i := range mtx {
+		mtx[i] = make([]int, n)
+		for j := 0; j < n; j++ {
+			mtx[i][j] = 1
 		}
 	}
 	return mtx
@@ -219,13 +233,15 @@ func main() {
 	println("Parameters: n=", n, "; s=", s)
 
 	// generating the matrices
-	mtxA := randomMatrix(n)
+	// mtxA := randomMatrix(n)
+	mtxA := allOnesMatrix(n)
 	if DISPLAY_MATRICES {
 		println("Matrix A")
 		println(mtxA.toString(4))
 		println()
 	}
-	mtxB := randomMatrix(n)
+	// mtxB := randomMatrix(n)
+	mtxB := allOnesMatrix(n)
 	if DISPLAY_MATRICES {
 		println("Matrix B")
 		println(mtxB.toString(4))
