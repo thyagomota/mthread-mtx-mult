@@ -42,7 +42,7 @@ func randomMatrix(n int) matrix {
 }
 
 /*
- * generates a all-ones nxn matrix of integers
+ * generates an all-ones nxn matrix of integers
  */
 func allOnesMatrix(n int) matrix {
 	mtx := make(matrix, n)
@@ -50,6 +50,20 @@ func allOnesMatrix(n int) matrix {
 		mtx[i] = make([]int, n)
 		for j := 0; j < n; j++ {
 			mtx[i][j] = 1
+		}
+	}
+	return mtx
+}
+
+/*
+ * generates an all-zeros nxn matrix of integers
+ */
+func allZerosMatrix(n int) matrix {
+	mtx := make(matrix, n)
+	for i := range mtx {
+		mtx[i] = make([]int, n)
+		for j := 0; j < n; j++ {
+			mtx[i][j] = 0
 		}
 	}
 	return mtx
@@ -96,11 +110,11 @@ func (mtx matrix) toString(col int) string {
 func (mtx matrix) getSlice(i int, j int, s int) matrix {
 	slc := make(matrix, s)
 	row := i * s
-	for newMtxRow := 0; newMtxRow < s; newMtxRow++ {
-		slc[newMtxRow] = make([]int, s)
+	for slcRow := 0; slcRow < s; slcRow++ {
+		slc[slcRow] = make([]int, s)
 		col := j * s
-		for newMtxCol := 0; newMtxCol < s; newMtxCol++{
-			slc[newMtxRow][newMtxCol] = mtx[row][col]
+		for slcCol := 0; slcCol < s; slcCol++{
+			slc[slcRow][slcCol] = mtx[row][col]
 			col++
 		}
 		row++
@@ -147,7 +161,7 @@ func (mtx matrix) mergeSlices(slices [][]matrix) {
  */
 func stMultiply(mtxA [][]int, mtxB [][]int) matrix {
 	n := len(mtxA)
-	newMtx := make(matrix, n)
+	newMtx := allZerosMatrix(n)
 	for i := 0; i < n; i++ {
 		newMtx[i] = make([]int, n)
 		for j := 0; j < n; j++ {
@@ -184,7 +198,7 @@ func mtMultiply(mtxA matrix, mtxB matrix, s int) matrix {
 
 	// step 2: allocate the resulting matrix
 	n := len(mtxA)
-	mtxC := make(matrix, n)
+	mtxC := allZerosMatrix(n)
 	for i := 0; i < n; i++ {
 		mtxC[i] = make([]int, n)
 	}
@@ -199,7 +213,7 @@ func mtMultiply(mtxA matrix, mtxB matrix, s int) matrix {
 			for k := 0; k < n / s; k++ {
 				go slicesC[i][j].addMultiply(slicesA[i][k], slicesB[k][j])
 			}
-			wg.Wait()
+			wg.Wait() // wait for round to finish
 		}
 	}
 
@@ -209,7 +223,7 @@ func mtMultiply(mtxA matrix, mtxB matrix, s int) matrix {
 }
 
 func usage() {
-	println("Use: go run mtxMult n s")
+	println("Use: go run mtx_mult n s")
 	println("\tn: size of the matrices (n >= 4)")
 	println("\ts: size of each slice (n % s = 0)")
 }
